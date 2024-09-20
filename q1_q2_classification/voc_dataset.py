@@ -29,6 +29,7 @@ class VOCDataset(Dataset):
         self.ann_dir = os.path.join(data_dir, 'Annotations')
 
         split_file = os.path.join(data_dir, 'ImageSets/Main', split + '.txt')
+        print(split_file)
         with open(split_file) as fp:
             self.index_list = [line.strip() for line in fp]
 
@@ -72,6 +73,17 @@ class VOCDataset(Dataset):
             # The difficult attribute specifies whether a class is ambiguous and by setting its weight to zero it does not contribute to the loss during training 
             weight_vec = torch.ones(20)
 
+            root = tree.getroot()
+
+            for child in root:
+                if child.tag == "object":
+                    label = str(child.find("name").text).lower()
+                    idx = self.CLASS_NAMES.index(label)
+                    class_vec[idx] += 1
+                    difficult = int(str(child.find("difficult").text))
+                    if difficult == 1:
+                        weight_vec[idx] = 0
+
             ######################################################################
             #                            END OF YOUR CODE                        #
             ######################################################################
@@ -92,7 +104,14 @@ class VOCDataset(Dataset):
         # change and you will have to write the correct value of `flat_dim`
         # in line 46 in simple_cnn.py
         ######################################################################
-        pass
+        
+        return [
+            transforms.RandomHorizontalFlip(p=0.5),
+            transforms.RandomVerticalFlip(p=0.5),
+            transforms.RandomRotation(degrees=(90, -90)),
+            transforms.RandomResizedCrop(size=(self.size*0.5, self.size*0.5), antialias=True)
+        ]
+
         ######################################################################
         #                            END OF YOUR CODE                        #
         ######################################################################

@@ -53,7 +53,9 @@ def train(args, model, optimizer, scheduler=None, model_name='model'):
             # Function Outputs:
             #   - `output`: Computed loss, a single floating point number
             ##################################################################
-            loss = 0
+            
+            print(output.shape)
+            
             ##################################################################
             #                          END OF YOUR CODE                      #
             ##################################################################
