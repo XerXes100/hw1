@@ -21,7 +21,7 @@ if __name__ == "__main__":
     args = ARGS(
         epochs=10,
         inp_size=64,
-        use_cuda=True,
+        use_cuda=False,
         val_every=70,
         lr=0.005,
         batch_size=64,

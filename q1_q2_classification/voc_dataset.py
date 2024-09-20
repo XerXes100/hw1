@@ -29,7 +29,6 @@ class VOCDataset(Dataset):
         self.ann_dir = os.path.join(data_dir, 'Annotations')
 
         split_file = os.path.join(data_dir, 'ImageSets/Main', split + '.txt')
-        print(split_file)
         with open(split_file) as fp:
             self.index_list = [line.strip() for line in fp]
 
@@ -79,7 +78,7 @@ class VOCDataset(Dataset):
                 if child.tag == "object":
                     label = str(child.find("name").text).lower()
                     idx = self.CLASS_NAMES.index(label)
-                    class_vec[idx] += 1
+                    class_vec[idx] = 1
                     difficult = int(str(child.find("difficult").text))
                     if difficult == 1:
                         weight_vec[idx] = 0
@@ -108,8 +107,8 @@ class VOCDataset(Dataset):
         return [
             transforms.RandomHorizontalFlip(p=0.5),
             transforms.RandomVerticalFlip(p=0.5),
-            transforms.RandomRotation(degrees=(90, -90)),
-            transforms.RandomResizedCrop(size=(self.size*0.5, self.size*0.5), antialias=True)
+            transforms.RandomRotation(degrees=(-90, 90)),
+            transforms.RandomResizedCrop(size=(int(self.size*0.5), int(self.size*0.5)), antialias=True)
         ]
 
         ######################################################################

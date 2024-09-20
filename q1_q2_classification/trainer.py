@@ -53,8 +53,18 @@ def train(args, model, optimizer, scheduler=None, model_name='model'):
             # Function Outputs:
             #   - `output`: Computed loss, a single floating point number
             ##################################################################
-            
-            print(output.shape)
+
+            output = output * wgt
+            target = target * wgt
+
+            # Implementing Cross Entropy Loss
+
+            probs = torch.sigmoid(output)
+
+            loss_per_class = target * torch.log(probs) + (1 - target) * torch.log(1 - probs)
+            loss_per_example = -torch.sum(loss_per_class, dim=1)
+
+            loss = loss_per_example.mean()
             
             ##################################################################
             #                          END OF YOUR CODE                      #
